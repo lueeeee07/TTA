@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { DataProvider } from './api/DataContext';
 import Navbar from './components/Navbar';
@@ -25,6 +25,18 @@ export default function App() {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
 
+  const handleLoaderComplete = useCallback(() => {
+    setLoading(false);
+  }, []);
+
+  // Failsafe timer so screen is never blank even if an asset or event stalls
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      setLoading(false);
+    }, 1800);
+    return () => clearTimeout(fallbackTimer);
+  }, []);
+
   const handleOpenJoinModal = () => setIsJoinModalOpen(true);
   const handleCloseJoinModal = () => setIsJoinModalOpen(false);
 
@@ -35,7 +47,7 @@ export default function App() {
     <DataProvider>
     <>
       {/* Page Loader — renders on top, fades out automatically */}
-      {loading && <PageLoader onComplete={() => setLoading(false)} />}
+      {loading && <PageLoader onComplete={handleLoaderComplete} />}
 
       <Router basename={import.meta.env.BASE_URL}>
         <ScrollToTop />

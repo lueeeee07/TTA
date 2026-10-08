@@ -1,3 +1,4 @@
+redirectsOrigin = "config"
 plugins = []
 headers = []
 
@@ -7,9 +8,8 @@ headers = []
 
 [build]
 publish = "C:\\Users\\surface\\Documents\\TTA\\dist"
-publishOrigin = "ui"
-commandOrigin = "ui"
-base = "C:\\Users\\surface\\Documents\\TTA"
+publishOrigin = "config"
+commandOrigin = "config"
 command = "npm run build"
 
 [build.environment]

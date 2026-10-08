@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 export default function PageLoader({ onComplete }) {
   const [hiding, setHiding] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     // Start hide animation at 1.1s, fully unmount at 1.7s
     const hideTimer = setTimeout(() => setHiding(true), 1100);
-    const doneTimer = setTimeout(() => onComplete?.(), 1700);
+    const doneTimer = setTimeout(() => {
+      if (onCompleteRef.current) {
+        onCompleteRef.current();
+      }
+    }, 1700);
     return () => {
       clearTimeout(hideTimer);
       clearTimeout(doneTimer);
     };
-  }, [onComplete]);
+  }, []);
 
   return (
     <div
