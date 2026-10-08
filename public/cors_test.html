@@ -1,0 +1,19 @@
+<html>
+<body>
+<h2>API CORS Test</h2>
+<pre id="result">Loading...</pre>
+<script>
+fetch('http://localhost/TTA/api/endpoints/clubs.php')
+  .then(r => {
+    document.getElementById('result').textContent = 'Status: ' + r.status + '\nHeaders: ' + JSON.stringify(Object.fromEntries(r.headers.entries()), null, 2);
+    return r.json();
+  })
+  .then(data => {
+    document.getElementById('result').textContent += '\n\nClubs found: ' + data.length + '\n\n' + data.map(c => c.name).join('\n');
+  })
+  .catch(err => {
+    document.getElementById('result').textContent = 'ERROR: ' + err.message;
+  });
+</script>
+</body>
+</html>
