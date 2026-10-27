@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Calendar, Send, CheckCircle2 } from 'lucide-react';
+import { API_BASE } from '../api/config';
 
 export default function ContactSection({ onOpenBookModal }) {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ export default function ContactSection({ onOpenBookModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost/TTA/api/endpoints/contact.php', {
+      await fetch(`${API_BASE}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -1,20 +1,25 @@
-// Base URL for the PHP API (XAMPP / Apache / Vite dev server)
-const getApiBase = () => {
-  if (typeof window !== 'undefined') {
-    // If running on local dev server or Apache, use relative path first for proxy / same-origin
-    if (window.location.port === '5173') {
-      return '/TTA/api/endpoints';
-    }
-    return `${window.location.origin}/TTA/api/endpoints`;
+// Base URL for the TTA Backend API (Node.js + Express / Vite proxy / Production URL)
+export const getApiBase = () => {
+  if (import.meta.env.VITE_API_URL) {
+    const custom = import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+    return custom.endsWith('/api') ? custom : `${custom}/api`;
   }
-  return 'http://localhost/TTA/api/endpoints';
+  if (typeof window !== 'undefined') {
+    // If running on Vite dev server (port 5173), use relative proxy path
+    if (window.location.port === '5173') {
+      return '/api';
+    }
+    return `${window.location.origin}/api`;
+  }
+  return 'http://localhost:5000/api';
 };
 
-const API_BASE = getApiBase();
+export const API_BASE = getApiBase();
 
 export async function fetchApi(endpoint) {
-  const separator = endpoint.includes('?') ? '&' : '?';
-  const url = `${API_BASE}/${endpoint}${separator}_=${Date.now()}`;
+  const cleanEndpoint = endpoint;
+  const separator = cleanEndpoint.includes('?') ? '&' : '?';
+  const url = `${API_BASE}/${cleanEndpoint}${separator}_=${Date.now()}`;
 
   try {
     const res = await fetch(url, {
@@ -27,10 +32,10 @@ export async function fetchApi(endpoint) {
     }
     return json;
   } catch (err) {
-    // If relative path failed, try direct absolute URL fallback
-    if (!API_BASE.startsWith('http://localhost/')) {
+    // Fallback: try direct localhost:5000 if running locally and relative failed
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost' && !API_BASE.includes(':5000')) {
       try {
-        const directUrl = `http://localhost/TTA/api/endpoints/${endpoint}${separator}_=${Date.now()}`;
+        const directUrl = `http://localhost:5000/api/${cleanEndpoint}${separator}_=${Date.now()}`;
         const fallbackRes = await fetch(directUrl, { cache: 'no-store' });
         if (fallbackRes.ok) {
           const fallbackJson = await fallbackRes.json();

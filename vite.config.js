@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: process.env.NETLIFY ? '/' : '/TTA/',
+  base: '/',
   plugins: [
     react(),
     tailwindcss()
@@ -11,14 +11,20 @@ export default defineConfig({
   server: {
     proxy: {
       '/TTA/api/endpoints': {
-        target: 'http://localhost/TTA/api/endpoints',
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/TTA\/api\/endpoints/, ''),
       },
-      '/api/endpoints': {
-        target: 'http://localhost/TTA/api/endpoints',
+      '/api': {
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/endpoints/, ''),
+      },
+      '/admin': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/admin-assets': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
       },
     },
   },

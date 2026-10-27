@@ -1,0 +1,155 @@
+<%- include('includes/header') %>
+
+<div class="page-toolbar">
+    <div class="page-toolbar-info">
+        <div class="count-pill">
+            <i class="fas fa-photo-film text-primary"></i> Total Media: <span><%= gallery.length %></span>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-tta" data-bs-toggle="modal" data-bs-target="#gModal" onclick="clearForm()">
+            <i class="fas fa-plus"></i> Add Media Item
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Media Preview</th>
+                    <th>Title & Description</th>
+                    <th>Category</th>
+                    <th>Format</th>
+                    <th>Website Visibility</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% gallery.forEach(g => { %>
+                <tr>
+                    <td style="width: 80px;">
+                        <img src="<%= g.image %>" alt="" class="table-thumb" style="width: 65px; height: 48px;" onerror="this.src='https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=100&auto=format&fit=crop&q=60'">
+                    </td>
+                    <td>
+                        <div class="fw-bold text-dark"><%= g.title %></div>
+                    </td>
+                    <td>
+                        <span class="badge badge-soft-primary"><%= g.category || 'General' %></span>
+                    </td>
+                    <td>
+                        <% if (g.type === 'video') { %>
+                            <span class="badge badge-soft-danger"><i class="fas fa-video me-1"></i> Video</span>
+                        <% } else { %>
+                            <span class="badge badge-soft-info"><i class="fas fa-image me-1"></i> Image</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <%- include('includes/active_toggle', { item: g }) %>
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <button class="btn-action-icon edit me-1" onclick='editG(<%- JSON.stringify(g) %>)' title="Edit item">
+                            <i class="fas fa-pen-to-square"></i>
+                        </button>
+                        <form method="POST" class="d-inline" onsubmit="return confirm('Delete this media item?')">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="<%= g.id %>">
+                            <button class="btn-action-icon delete" title="Delete item">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+            <% if (!gallery || gallery.length === 0) { %>
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state-box">
+                            <div class="empty-state-icon"><i class="fas fa-photo-film"></i></div>
+                            <div class="empty-state-title">No Media Uploaded Yet</div>
+                            <div class="empty-state-desc">Upload photos and highlight reels from tournaments, training clinics, and ceremonies.</div>
+                            <button class="btn btn-tta" data-bs-toggle="modal" data-bs-target="#gModal" onclick="clearForm()">
+                                <i class="fas fa-plus"></i> Add Media Item
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Gallery Modal -->
+<div class="modal fade" id="gModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <div class="modal-icon-badge">
+                            <i class="fas fa-photo-film"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0" id="modalTitle">Add Gallery Item</h5>
+                            <small class="text-muted">Upload or link photos and video clips</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="action" id="formAction" value="add">
+                    <input type="hidden" name="id" id="formId">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Media Caption / Title <span class="req">*</span></label>
+                            <input type="text" name="title" id="fTitle" class="form-control" placeholder="e.g. 2026 National Championship Trophy Presentation" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Category</label>
+                            <input type="text" name="category" id="fCategory" class="form-control" placeholder="e.g. Tournaments, JTI, Events">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Media Format</label>
+                            <select name="type" id="fType" class="form-select">
+                                <option value="image">Image Photo</option>
+                                <option value="video">Video Reel</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Image or Thumbnail URL <span class="req">*</span></label>
+                            <input type="text" name="image" id="fImage" class="form-control" placeholder="https://images.unsplash.com/..." required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-tta"><i class="fas fa-save"></i> Save Media</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function clearForm() {
+    document.getElementById('modalTitle').textContent = 'Add Gallery Item';
+    document.getElementById('formAction').value = 'add';
+    document.getElementById('formId').value = '';
+    ['fTitle','fCategory','fImage'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fType').value = 'image';
+}
+function editG(g) {
+    document.getElementById('modalTitle').textContent = 'Edit Gallery Item';
+    document.getElementById('formAction').value = 'edit';
+    document.getElementById('formId').value = g.id;
+    document.getElementById('fTitle').value = g.title;
+    document.getElementById('fCategory').value = g.category || '';
+    document.getElementById('fType').value = g.type || 'image';
+    document.getElementById('fImage').value = g.image || '';
+    new bootstrap.Modal(document.getElementById('gModal')).show();
+}
+</script>
+
+<%- include('includes/footer') %>

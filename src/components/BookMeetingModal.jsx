@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Calendar, CheckCircle2 } from 'lucide-react';
+import { API_BASE } from '../api/config';
 
 export default function BookMeetingModal({ isOpen, onClose }) {
   const [meetingType, setMeetingType] = useState('Club Affiliation & Membership');
@@ -15,7 +16,7 @@ export default function BookMeetingModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost/TTA/api/endpoints/book_meeting.php', {
+      await fetch(`${API_BASE}/book_meeting`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

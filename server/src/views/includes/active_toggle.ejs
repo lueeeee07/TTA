@@ -1,0 +1,13 @@
+<form method="POST" class="d-inline active-toggle-form">
+    <input type="hidden" name="action" value="toggle_active">
+    <input type="hidden" name="id" value="<%= item.id %>">
+    <% if (item.is_active === 1 || item.is_active === true) { %>
+        <button type="submit" class="status-toggle-badge active" title="Visible on public website • Click to hide">
+            <span class="status-dot"></span> Published
+        </button>
+    <% } else { %>
+        <button type="submit" class="status-toggle-badge inactive" title="Hidden from public website • Click to publish">
+            <span class="status-dot"></span> Hidden
+        </button>
+    <% } %>
+</form>

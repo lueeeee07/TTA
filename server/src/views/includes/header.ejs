@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle || 'Admin Portal' %> — Tanzania Tennis Association</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="/admin-assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="brand">
+            <a href="/admin" class="brand-logo-wrap">
+                <div class="brand-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="brand-text">
+                    <div class="brand-title"><span>TTA</span> Admin</div>
+                    <div class="brand-subtitle">Tennis Portal</div>
+                </div>
+            </a>
+            <span class="version-badge">v2.2</span>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="section-label">Overview</div>
+            <a class="nav-link <%= (currentPage === 'dashboard') ? 'active' : '' %>" href="/admin">
+                <div class="nav-link-content">
+                    <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+                </div>
+            </a>
+
+            <div class="divider"></div>
+            <div class="section-label">Content Management</div>
+            <a class="nav-link <%= (currentPage === 'tournaments') ? 'active' : '' %>" href="/admin/tournaments">
+                <div class="nav-link-content">
+                    <i class="fas fa-trophy"></i> <span>Tournaments</span>
+                </div>
+            </a>
+            <a class="nav-link <%= (currentPage === 'news') ? 'active' : '' %>" href="/admin/news">
+                <div class="nav-link-content">
+                    <i class="fas fa-newspaper"></i> <span>News & Media</span>
+                </div>
+            </a>
+            <a class="nav-link <%= (currentPage === 'clubs') ? 'active' : '' %>" href="/admin/clubs">
+                <div class="nav-link-content">
+                    <i class="fas fa-building"></i> <span>Affiliated Clubs</span>
+                </div>
+            </a>
+            <a class="nav-link <%= (currentPage === 'programs') ? 'active' : '' %>" href="/admin/programs">
+                <div class="nav-link-content">
+                    <i class="fas fa-graduation-cap"></i> <span>Programs</span>
+                </div>
+            </a>
+            <a class="nav-link <%= (currentPage === 'teams') ? 'active' : '' %>" href="/admin/teams">
+                <div class="nav-link-content">
+                    <i class="fas fa-users"></i> <span>National Teams</span>
+                </div>
+            </a>
+            <a class="nav-link <%= (currentPage === 'gallery') ? 'active' : '' %>" href="/admin/gallery">
+                <div class="nav-link-content">
+                    <i class="fas fa-photo-film"></i> <span>Photo & Video Gallery</span>
+                </div>
+            </a>
+            <a class="nav-link <%= (currentPage === 'leadership') ? 'active' : '' %>" href="/admin/leadership">
+                <div class="nav-link-content">
+                    <i class="fas fa-user-tie"></i> <span>Executive Leadership</span>
+                </div>
+            </a>
+
+            <div class="divider"></div>
+            <div class="section-label">Inquiries & Submissions</div>
+            <a class="nav-link <%= (currentPage === 'messages') ? 'active' : '' %>" href="/admin/messages">
+                <div class="nav-link-content">
+                    <i class="fas fa-envelope-open-text"></i> <span>Contact Messages</span>
+                </div>
+                <% if (typeof unreadMsgs !== 'undefined' && unreadMsgs > 0) { %>
+                    <span class="badge bg-danger shadow-sm"><%= unreadMsgs %></span>
+                <% } %>
+            </a>
+            <a class="nav-link <%= (currentPage === 'applications') ? 'active' : '' %>" href="/admin/applications">
+                <div class="nav-link-content">
+                    <i class="fas fa-file-signature"></i> <span>Club Applications</span>
+                </div>
+                <% if (typeof pendingApps !== 'undefined' && pendingApps > 0) { %>
+                    <span class="badge bg-warning text-dark shadow-sm"><%= pendingApps %></span>
+                <% } %>
+            </a>
+            <a class="nav-link <%= (currentPage === 'bookings') ? 'active' : '' %>" href="/admin/bookings">
+                <div class="nav-link-content">
+                    <i class="fas fa-calendar-check"></i> <span>Meeting Bookings</span>
+                </div>
+                <% if (typeof pendingBookings !== 'undefined' && pendingBookings > 0) { %>
+                    <span class="badge bg-info text-dark shadow-sm"><%= pendingBookings %></span>
+                <% } %>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="/" target="_blank" class="view-site-link">
+                <i class="fas fa-external-link-alt"></i> <span>View Public Website</span>
+            </a>
+            <div class="sidebar-user-card">
+                <div class="user-avatar-box">
+                    <div class="avatar-circle">
+                        <%= (typeof user !== 'undefined' && user?.name) ? user.name.charAt(0).toUpperCase() : 'A' %>
+                    </div>
+                    <div class="user-info-text">
+                        <div class="user-name"><%= (typeof user !== 'undefined' && user?.name) ? user.name : 'Administrator' %></div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                </div>
+                <a href="/admin/logout" class="text-danger p-2 text-decoration-none" title="Log out of Admin Portal">
+                    <i class="fas fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebarBackdrop" class="position-fixed inset-0 bg-dark opacity-50 d-none" style="z-index: 1040; top:0; left:0; width:100%; height:100%;" onclick="document.getElementById('sidebar').classList.remove('show'); this.classList.add('d-none');"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Sticky Header -->
+        <div class="top-bar-container">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light d-lg-none border shadow-sm rounded-3 p-2 px-3" onclick="document.getElementById('sidebar').classList.toggle('show'); document.getElementById('sidebarBackdrop').classList.toggle('d-none');">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="top-bar-title-group">
+                    <h1>
+                        <span class="title-icon">
+                            <%
+                            const pageIcons = {
+                                'dashboard': 'fa-chart-pie',
+                                'tournaments': 'fa-trophy',
+                                'news': 'fa-newspaper',
+                                'clubs': 'fa-building',
+                                'programs': 'fa-graduation-cap',
+                                'teams': 'fa-users',
+                                'gallery': 'fa-photo-film',
+                                'leadership': 'fa-user-tie',
+                                'messages': 'fa-envelope-open-text',
+                                'applications': 'fa-file-signature',
+                                'bookings': 'fa-calendar-check',
+                            };
+                            const currentIcon = pageIcons[currentPage] || 'fa-th-large';
+                            %>
+                            <i class="fas <%= currentIcon %>"></i>
+                        </span>
+                        <%= pageTitle || 'Dashboard' %>
+                    </h1>
+                    <div class="top-bar-breadcrumb">
+                        <span>TTA Portal</span>
+                        <i class="fas fa-chevron-right fs-xs text-muted"></i>
+                        <span><%= pageTitle || 'Overview' %></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="top-bar-actions">
+                <div class="admin-search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="adminGlobalSearch" placeholder="Filter rows in view..." class="admin-search-input" />
+                    <kbd class="search-kbd">Ctrl+K</kbd>
+                </div>
+
+                <div class="live-clock-badge">
+                    <span class="live-dot"></span>
+                    <span id="adminLiveClock">--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="fas fa-check-circle fs-5 me-2"></i>
+                <div><%= success %></div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show mb-4">
+                <i class="fas fa-exclamation-circle fs-5 me-2"></i>
+                <div><%= error %></div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>

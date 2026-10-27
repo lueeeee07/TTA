@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useTtaData } from '../api/DataContext';
+import { API_BASE } from '../api/config';
 
 export default function JoinClubModal({ isOpen, onClose }) {
   const { clubsData, regionsData } = useTtaData();
@@ -21,7 +22,7 @@ export default function JoinClubModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost/TTA/api/endpoints/join_club.php', {
+      await fetch(`${API_BASE}/join_club`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
